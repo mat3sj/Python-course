@@ -1,5 +1,5 @@
 '''
-author = Mates - Martin Jasan 
+author = Mates - Martin Jasan  
 '''
 TEXTS = ['''
 Situated about 10 miles west of Kemmerer, 
