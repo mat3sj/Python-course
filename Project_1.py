@@ -31,7 +31,7 @@ in modern oceans. Other fish such as paddlefish,
 garpike and stingray are also present.'''
 ]
 defined_users = {'bob':'123','ann':'pass123','mike':'password123','liz':'pass123'}
-
+splitted_text = []
 def separator():
     print('-'*50)
 
@@ -39,52 +39,46 @@ def login():
     print('Welcome to the app. Please log in:')
     user = input('USERNAME: ')
     password = input('PASSWORD: ')
-    if user in list(defined_users.keys()) and password == defined_users[user]:
+    if user in defined_users and password == defined_users[user]: # Changed from 'in list(defined_users.keys())'
         return True
     else:
         return False
 
-def word_count(text):
-    print(f'There are {len(text.split())} words in selected text')
+def word_count(splitted_text):
+    print(f'There are {len(splitted_text)} words in selected text')
 
-def titlecase(text):
+def titlecase(splitted_text):  # logical mistake - it was counting all capital letters
     result = 0
-    for i in text:
-        if i.istitle():
+    for i in splitted_text:
+        if i[0].istitle(): # fix?
             result += 1
     print(f'There are {result} titlecase words')
 
-def uppercase(text):
-    text=text.split()
+def uppercase(splitted_text):
     result = 0
-    for i in text:
+    for i in splitted_text:
         if i.isupper():
             result +- 1
         
     print(f'There are {result} uppercase words')
 
-def lowercase(text):
-    text=text.split()
+def lowercase(splitted_text):
     result = 0
-    for i in text:
+    for i in splitted_text:
         if i.islower():
             result += 1
     print(f'There are {result} lowercase words')
 
-def numeric(text):
-    text=text.split()
+def numeric(splitted_text):
     result = 0
-    for i in text:
+    for i in splitted_text:
         if i.isnumeric():
             result += 1
     print(f'There are {result} numeric words') 
 
-def frequency(text):
-    text = text.replace(',','')
-    text = text.replace('.','')
-    text = text.split()
+def frequency(splitted_text):
     freq = {}
-    for i in text:
+    for i in splitted_text:
         if len(i) in freq:
             freq[len(i)] += 1
         else:
@@ -94,10 +88,9 @@ def frequency(text):
     for i in ordered:
         print(f'{i}: ','*' * freq[i],freq[i])
 
-def numbers_sum(text):
-    text=text.split()
+def numbers_sum(splitted_text):
     result = 0
-    for i in text:
+    for i in splitted_text:
         if i.isnumeric():
             result += float(i)
     print(f'If we summed all the numbers in this text we would get: {result}')
@@ -109,17 +102,27 @@ def program(library):
         return
     separator()
     print(f'We have {len(library)} texts to be analyzed.')
-    text = library[int(input(f'Enter a number between 1 and {len(library)} to select: '))-1]
+    user_choice = int(input(f'Enter a number between 1 and {len(library)} to select: '))-1
+    if user_choice in range(int(len(library)-1)):
+        text = library[user_choice]
+    else:
+        print ('You have entered text number which is out of range, please run the task again')
+        return
+    
+    splitted_text = text.replace(',','')
+    splitted_text = splitted_text.replace('.','')
+    splitted_text = splitted_text.split()
+
     separator()
-    word_count(text)
-    titlecase(text)
-    uppercase(text)
-    lowercase(text)
-    numeric(text)
+    word_count(splitted_text)
+    titlecase(splitted_text)
+    uppercase(splitted_text)
+    lowercase(splitted_text)
+    numeric(splitted_text)
     separator()
-    frequency(text)
+    frequency(splitted_text)
     separator()
-    numbers_sum(text)
+    numbers_sum(splitted_text)
     separator()
 
 program(TEXTS)
