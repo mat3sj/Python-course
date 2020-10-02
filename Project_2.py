@@ -9,7 +9,7 @@ def create_board(size: int) -> list:
         result.append(line)
     return result
 
-def print_board(board: list) -> print:
+def print_board(board: list) -> print: # Prints given state of the board nicely
     template_lst = ['']
     size = len(board)
     for _ in range(size):
@@ -21,7 +21,7 @@ def print_board(board: list) -> print:
         print(template.format(*line))
         print('-'*size*4)
 
-def win_game(board: list, sym: str) -> bool:
+def win_game(board: list, sym: str) -> bool: # Testing if the game is won - not very happy with this solution
     if sym == 'x':
         opponent = 'o'
     else:
@@ -46,7 +46,7 @@ def win_game(board: list, sym: str) -> bool:
     if opponent not in right_dia and ' ' not in right_dia:
         return True
 
-def move(board: list, sym: str, my_move: int) -> list:
+def move(board: list, sym: str, my_move: int) -> list: # Processing single move by adding symbol to given cell
     possition = 1
     for idx, line in enumerate(board):
         for jdx, _ in enumerate(line):
@@ -55,7 +55,7 @@ def move(board: list, sym: str, my_move: int) -> list:
             possition += 1
     return board
 
-def get_lines(board: list, move: int) -> list:
+def get_lines(board: list, move: int) -> list: # Returns all relevant lines (column, row and diagonals(if present))
     x = (move-1) // len(board)
     y = (move-1) % len(board)
     line = []
@@ -71,7 +71,7 @@ def get_lines(board: list, move: int) -> list:
             right_dia.append(board[idx][len(board)-idx-1])
     return line, column, left_dia, right_dia
 
-def evaluate(board: list, move: int, sym: str) -> int:
+def evaluate(board: list, move: int, sym: str) -> int: #evaluate given move in current situation
     values = []
     if sym == 'x':
         me = 0
@@ -103,7 +103,7 @@ def evaluate(board: list, move: int, sym: str) -> int:
         result += 2**num
     return result
 
-def best_move(board: list, sym: str) -> int:
+def best_move(board: list, sym: str) -> int: #looking for a best possible move. If there are more of them, it choose it randomly
     move = 1
     current = 0
     best = 0
@@ -122,14 +122,14 @@ def best_move(board: list, sym: str) -> int:
     result = random.choice(set_of_moves)
     return result
 
-def end_of_game(board: list) -> bool:
+def end_of_game(board: list) -> bool: #testing if all cells are full
     for line in board:
         for cell in line:
             if cell == ' ':
                 return False
     return True
 
-def tic_tac_toe(size: int):
+def tic_tac_toe(size: int): # The main program
     board = create_board(size)
     possible_moves = list(range(1,size**2+1))
     print_board(board)
@@ -140,11 +140,11 @@ def tic_tac_toe(size: int):
         if sym == 'o':
             print('Player 1 is on the move')
             my_move = best_move(board, sym)
-            #my_move = input('Your move: ')
+            #my_move = int(input('Your move: '))
         else:
             print('Player 2 is on the move')
             my_move = best_move(board, sym)
-            #my_move = input('Your move: ')
+            #my_move = int(input('Your move: '))
         if my_move not in possible_moves:
             print('Your move is not possible to play')
             continue
