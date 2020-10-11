@@ -1,12 +1,7 @@
 import random
 
 def create_board(size: int) -> list:
-    result = []
-    for i in range(size):
-        line =[]
-        for j in range(size):
-            line.append(' ')
-        result.append(line)
+    result = [[' ' for _ in range(size)] for i in range(size)]
     return result
 
 def print_board(board: list) -> print: # Prints given state of the board nicely
@@ -21,7 +16,7 @@ def print_board(board: list) -> print: # Prints given state of the board nicely
         print(template.format(*line))
         print('-'*size*4)
 
-def win_game(board: list, sym: str) -> bool: # Testing if the game is won - not very happy with this solution
+def is_won(board: list, sym: str) -> bool: # Testing if the game is won - not very happy with this solution
     if sym == 'x':
         opponent = 'o'
     else:
@@ -36,23 +31,19 @@ def win_game(board: list, sym: str) -> bool: # Testing if the game is won - not 
         if opponent not in column and ' ' not in column:
             return True
 
-    left_dia = []
-    right_dia = []
-    for idx in range(len(board)):
-        left_dia.append(board[idx][len(board)-idx-1])
-        right_dia.append(board[idx][idx])
+    left_dia = [board[idx][len(board)-idx-1] for idx in range(len(board))]
+    right_dia = [board[idx][idx] for idx in range(len(board))]
+
     if opponent not in left_dia and ' ' not in left_dia:
         return True
     if opponent not in right_dia and ' ' not in right_dia:
         return True
 
 def move(board: list, sym: str, my_move: int) -> list: # Processing single move by adding symbol to given cell
-    possition = 1
-    for idx, line in enumerate(board):
-        for jdx, _ in enumerate(line):
-            if possition == my_move:
-                board[idx][jdx] = sym
-            possition += 1
+    size = len(board)
+    x = (my_move - 1) // size
+    y = (my_move -1) % size 
+    board[x][y] = sym
     return board
 
 def get_lines(board: list, move: int) -> list: # Returns all relevant lines (column, row and diagonals(if present))
@@ -122,12 +113,19 @@ def best_move(board: list, sym: str) -> int: #looking for a best possible move. 
     result = random.choice(set_of_moves)
     return result
 
-def end_of_game(board: list) -> bool: #testing if all cells are full
+def is_end(board: list) -> bool: #testing if all cells are full
     for line in board:
         for cell in line:
             if cell == ' ':
                 return False
     return True
+
+def is_possible(moves: list, move) -> bool:
+    if move in moves:
+        moves.remove(move)
+        return True
+    else:
+        return False
 
 def tic_tac_toe(size: int): # The main program
     board = create_board(size)
@@ -139,23 +137,23 @@ def tic_tac_toe(size: int): # The main program
         sym = switch[counter%2]
         if sym == 'o':
             print('Player 1 is on the move')
-            my_move = best_move(board, sym)
-            #my_move = int(input('Your move: '))
+            #my_move = best_move(board, sym)
+            my_move = int(input('Your move: '))
         else:
             print('Player 2 is on the move')
-            my_move = best_move(board, sym)
-            #my_move = int(input('Your move: '))
-        if my_move not in possible_moves:
+            #my_move = best_move(board, sym)
+            my_move = int(input('Your move: '))
+        if not is_possible(possible_moves, my_move):
             print('Your move is not possible to play')
             continue
-        possible_moves.remove(my_move)
+
         board = move(board,sym,my_move)
         print_board(board)
         counter += 1
-        if win_game(board,sym):
+        if is_won(board,sym):
             print (f'{sym} has won the game')
             break
-        if end_of_game(board):
+        if is_end(board):
             print('This is a tie!')
             break
     print ('Thank you for playing :-)')
